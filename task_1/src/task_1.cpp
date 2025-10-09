@@ -19,7 +19,7 @@ error_codes zero_to_nine(int input) {
         case 8: cout << "sekiz";  return OK;
         case 9: cout << "dokuz";  return OK;
         default: {
-            cout << "error: input isn't a supported digit";
+            cerr << "error: input isn't a supported digit";
             return WRONG_INPUT;
         }
     }
@@ -37,7 +37,7 @@ error_codes decades(int input) {
         case 8: cout << "seksen";  return OK;
         case 9: cout << "doksan";  return OK;
         default: {
-            cout << "error: input isn't a supported digit";
+            cerr << "error: input isn't a supported digit";
             return WRONG_INPUT;
         }
     }
@@ -47,7 +47,7 @@ int main() {
     int input;
     cin >> input;
     if (input < 0 || input > 99) {
-        cout << "error: input isn't a supported number";
+        cerr << "error: input isn't a supported number";
         return WRONG_INPUT;
     }
 
