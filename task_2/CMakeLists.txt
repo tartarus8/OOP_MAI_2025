@@ -1,31 +1,38 @@
 cmake_minimum_required(VERSION 3.16)
+project(task_2 LANGUAGES CXX)
 
-add_library(task2_lib
-    src/array.cpp
-    src/eleven.cpp
-)
-target_include_directories(task2_lib PUBLIC include)
-
-add_executable(task2_app src/main.cpp)
-target_link_libraries(task2_app PRIVATE task2_lib)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.15.0
 )
-set(INSTALL_GTEST OFF CACHE BOOL "Disable gtest install" FORCE)
+# Make the gtest targets (GTest::gtest, GTest::gtest_main, etc.) available
 FetchContent_MakeAvailable(googletest)
+
+add_library(mylib STATIC
+  include/eleven.cpp
+)
+# If eleven.cpp includes headers like #include "eleven.hpp" from include/
+target_include_directories(mylib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 enable_testing()
 
-add_executable(task2_tests tests/tests.cpp)
-target_link_libraries(task2_tests PRIVATE task2_lib gtest gtest_main)
-
-include(GoogleTest)
-set(CMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE PRE_TEST)
-gtest_discover_tests(task2_tests
-  DISCOVERY_TIMEOUT 30
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+add_executable(tests
+  tests/tests.cpp
 )
+target_link_libraries(tests
+  PRIVATE
+    mylib
+    GTest::gtest
+)
+
+# Either register the test binary directly...
+add_test(NAME MyProjectTests COMMAND tests)
+
+# ...or use gtest_discover_tests for automatic test discovery:
+# include(GoogleTest)
+# gtest_discover_tests(tests)

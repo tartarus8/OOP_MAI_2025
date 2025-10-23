@@ -1,48 +1,37 @@
-#pragma once
-#include "array.h"
+#ifndef ELEVEN_H
+#define ELEVEN_H
+
+#include <cstddef>
+#include <initializer_list>
 #include <string>
 #include <stdexcept>
-using namespace std;
 
 class Eleven {
 public:
-    Eleven();
-    explicit Eleven(unsigned long long v);
-    explicit Eleven(const string& s);
+    Eleven(); // no-argument initializer
+    Eleven(size_t n, unsigned char t = 0); // length-argument initializer
+    Eleven(const std::initializer_list<unsigned char>& t); // list initializer
+    Eleven(const std::string& t); // list-to-eleven initializer
+    Eleven(const Eleven& other); // initializer by copy
+    Eleven(Eleven&& other) noexcept; // initializer by reallocating
+    ~Eleven() noexcept; // destructor
 
-    Eleven(const Eleven&) = default;
-    Eleven(Eleven&&) noexcept = default;
-    ~Eleven() = default;
-
-    Eleven& operator=(const Eleven&) = default;
-    Eleven& operator=(Eleven&&) noexcept = default;
-
-    string toString() const;
-    bool isZero() const noexcept;
-
-    int compare(const Eleven& other) const noexcept;
-    bool equals(const Eleven& other) const noexcept { return compare(other) == 0; }
-    bool lessThan(const Eleven& other) const noexcept { return compare(other) < 0; }
-    bool greaterThan(const Eleven& other) const noexcept { return compare(other) > 0; }
-
+    // arithmetics
     Eleven add(const Eleven& rhs) const;
-    Eleven sub(const Eleven& rhs) const;
+    Eleven subtract(const Eleven& rhs) const;
 
-    Eleven addAssign(const Eleven& rhs) const { return add(rhs); }
-    Eleven subAssign(const Eleven& rhs) const { return sub(rhs); }
+    // comparisons
+    bool isEqual(const Eleven& rhs) const;
+    bool isLess(const Eleven& rhs) const;
+    bool isGreater(const Eleven& rhs) const;
 
-    Eleven copy() const { return Eleven(*this); }
+    std::string toString() const;
 
 private:
-    static constexpr unsigned BASE = 11;
-    Array digits_;
+    unsigned char* data_;   // dynamic digit array (0-10)
+    size_t length_;         // number of digits
 
-    static unsigned char charToDigit(char c);
-    static char digitToChar(unsigned char d);
-    static Array stripLeadingZerosLE(const Array& le);
-    static Array addLE(const Array& a, const Array& b);
-    static Array subLE(const Array& a, const Array& b);
-
-    explicit Eleven(const Array& leDigits) : digits_(stripLeadingZerosLE(leDigits)) {}
+    void trim(); // leading zeroes deleter
 };
 
+#endif
