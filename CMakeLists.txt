@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror")
 
-include(CTest)  # or: enable_testing()
+include(CTest)
 
 add_subdirectory(task_2)
